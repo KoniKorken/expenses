@@ -6,7 +6,7 @@ import cors from 'cors';
 const port = 4000;
 
 const app = express();
-app.use(cors() );
+app.use(cors());
 app.use(bodyParser.json());
 
 app.get('/', (req, res) => {
@@ -14,6 +14,9 @@ app.get('/', (req, res) => {
     res.send('Budget service is online');
 });
 
+/**
+ * Get all line items
+ */
 app.get('/api', (req, res) => {
     //get all budget lineItems
     res.set('content-type', 'application/json');
@@ -30,7 +33,7 @@ app.get('/api', (req, res) => {
                     id : row.lineItem_id, 
                     name: row.lineItem_name, 
                     category: row.lineItem_category, 
-                    amount:row.lineItem_amount, 
+                    amount: row.lineItem_amount, 
                     lineItem_proportion: row.lineItem_proportion
                 });
             });
@@ -46,13 +49,16 @@ app.get('/api', (req, res) => {
 
 });
 
+/**
+ * Create new line item
+ */
 app.post('/api', (req, res) => {
     console.log(req.body);
     res.set('content-type', 'application/json');
     const sql = 'INSERT INTO budget(lineItem_name, lineItem_category, lineItem_amount, lineItem_proportion) VALUES (?, ?, ?, ?)';
     let newId;  
     try{
-        DB.run(sql, [req.body.name, req.body.category, req.body.amount,req.body.proportion], function(err){
+        DB.run(sql, [req.body.name, req.body.category, req.body.amount, req.body.proportion], function(err){
             if(err){
                 throw err;
             }
@@ -69,6 +75,9 @@ app.post('/api', (req, res) => {
     }
 });
 
+/**
+ * Remove line item
+ */
 app.delete('/api', (req, res) => {
     res.set('content-type', 'application/json');
     const sql = 'DELETE FROM budget WHERE lineItem_id = ?';
